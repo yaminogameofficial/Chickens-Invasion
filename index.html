@@ -285,28 +285,25 @@
       font-size: 9px;
       color: var(--primary);
       letter-spacing: 1px;
+      text-align: center;
     }
 
-    .token-value {
+    .code-display {
       background: #0d1117;
-      border: 1px solid #00ff88;
-      padding: 12px;
-      font-size: 11px;
+      border: 2px solid #00ff88;
+      padding: 20px;
+      text-align: center;
+      letter-spacing: 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 22px;
       color: #00ff88;
-      word-break: break-all;
-      max-height: 80px;
-      overflow: hidden;
-      position: relative;
+      text-shadow: 0 0 10px #00ff88;
+      animation: codePulse 2s ease-in-out infinite;
     }
 
-    .token-value::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 30px;
-      background: linear-gradient(transparent, #0d1117);
+    @keyframes codePulse {
+      0%, 100% { box-shadow: 0 0 5px rgba(0,255,136,0.3); }
+      50% { box-shadow: 0 0 20px rgba(0,255,136,0.6); }
     }
 
     .btn-copy {
@@ -400,13 +397,13 @@
     </div>
 
     <div class="token-box" id="tokenBox">
-      <div class="token-label">► ID TOKEN (para Unity):</div>
-      <div class="token-value" id="tokenValue"></div>
-      <button class="btn-copy" onclick="copyToken()">[ COPIAR TOKEN ]</button>
+      <div class="token-label">► CÓDIGO PARA UNITY:</div>
+      <div class="code-display" id="codeDisplay">--------</div>
+      <button class="btn-copy" onclick="copyCode()">[ COPIAR CÓDIGO ]</button>
     </div>
 
     <div class="info-text" style="margin-top: 16px;">
-      Pega el token en Unity<br>para completar el login
+      Escribe este código en Unity<br>para completar el login
     </div>
   </div>
 
@@ -417,8 +414,8 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
-  // CAMBIA ESTO por tu Client ID de Google Console
-  const CLIENT_ID = '645801052120-8rpf37aagrf1cj0o3r9uk210b9erk729.apps.googleusercontent.com';
+  // ⚠️ CAMBIA ESTO por tu Client ID de Google Console
+  const CLIENT_ID = '645801052120-96js8g7gp53jmj52suptrvp72bibnoeb.apps.googleusercontent.com';
 
   let idToken = '';
 
@@ -477,8 +474,29 @@
     });
   }
 
+  const SECRET_KEY = 'CHK_INV_2026'; // Clave compartida con Unity
+
+  // Comprimir + encriptar token en código corto
+  function encryptToken(token) {
+    // XOR simple con la clave + Base62
+    const keyBytes = Array.from(SECRET_KEY).map(c => c.charCodeAt(0));
+    const tokenBytes = Array.from(token).map(c => c.charCodeAt(0));
+    const xored = tokenBytes.map((b, i) => b ^ keyBytes[i % keyBytes.length]);
+    
+    // Convertir a Base64 y tomar primeros 12 chars como ID + guardar completo en sessionStorage
+    const encoded = btoa(String.fromCharCode(...xored));
+    const shortCode = encoded.replace(/[^A-Z0-9]/gi, '').substring(0, 12).toUpperCase();
+    
+    // Guardar token completo encriptado en sessionStorage con el código como clave
+    sessionStorage.setItem('token_' + shortCode, encoded);
+    
+    return shortCode;
+  }
+
   function handleCredentialResponse(response) {
     idToken = response.credential;
+
+    const shortCode = encryptToken(idToken);
 
     const statusBox = document.getElementById('statusBox');
     statusBox.className = 'status-box success';
@@ -487,17 +505,16 @@
     const tokenBox = document.getElementById('tokenBox');
     tokenBox.classList.add('visible');
 
-    const tokenValue = document.getElementById('tokenValue');
-    tokenValue.textContent = idToken;
-
+    document.getElementById('codeDisplay').textContent = shortCode;
     document.getElementById('btnGoogle').disabled = true;
   }
 
-  function copyToken() {
-    navigator.clipboard.writeText(idToken).then(() => {
+  function copyCode() {
+    const code = document.getElementById('codeDisplay').textContent;
+    navigator.clipboard.writeText(code).then(() => {
       const btn = document.querySelector('.btn-copy');
       btn.textContent = '[ ✓ COPIADO! ]';
-      setTimeout(() => btn.textContent = '[ COPIAR TOKEN ]', 2000);
+      setTimeout(() => btn.textContent = '[ COPIAR CÓDIGO ]', 2000);
     });
   }
 
