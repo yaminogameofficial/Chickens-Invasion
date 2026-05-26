@@ -459,7 +459,7 @@ function loginWithGoogle() {
 // --------------------
 // TOKEN RECIBIDO
 // --------------------
-function handleCredentialResponse(response) {
+async function handleCredentialResponse(response) {
 
   const statusBox = document.getElementById('statusBox');
 
@@ -468,13 +468,29 @@ function handleCredentialResponse(response) {
 
   document.getElementById('btnGoogle').disabled = true;
 
-  const token = encodeURIComponent(response.credential);
+  const token = response.credential;
 
-  // DEVOLVER TOKEN A UNITY
-  setTimeout(() => {
-    window.location.href =
-      "http://localhost:8080/?token=" + token;
-  }, 700);
+  try {
+
+    // enviar token a Unity
+    await fetch(
+      "http://localhost:8080/auth?token=" + encodeURIComponent(token)
+    );
+
+    statusBox.textContent = '✓ REGRESANDO AL JUEGO...';
+
+    // cerrar ventana automáticamente
+    window.close();
+
+  }
+  catch (err) {
+
+    console.error(err);
+
+    statusBox.className = 'status-box error';
+    statusBox.textContent =
+      'No se pudo conectar con el juego.';
+  }
 }
 
 // --------------------
