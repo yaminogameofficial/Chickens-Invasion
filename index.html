@@ -291,14 +291,16 @@
     .code-display {
       background: #0d1117;
       border: 2px solid #00ff88;
-      padding: 20px;
+      padding: 20px 12px;
       text-align: center;
-      letter-spacing: 8px;
+      letter-spacing: 4px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 22px;
+      font-size: 18px;
       color: #00ff88;
       text-shadow: 0 0 10px #00ff88;
       animation: codePulse 2s ease-in-out infinite;
+      width: 100%;
+      overflow: hidden;
     }
 
     @keyframes codePulse {
@@ -414,7 +416,7 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
-  //CAMBIA ESTO por tu Client ID de Google Console
+  // ⚠️ CAMBIA ESTO por tu Client ID de Google Console
   const CLIENT_ID = '645801052120-8rpf37aagrf1cj0o3r9uk210b9erk729.apps.googleusercontent.com';
 
   let idToken = '';
@@ -476,27 +478,22 @@
 
   const SECRET_KEY = 'CHK_INV_2026'; // Clave compartida con Unity
 
-  // Comprimir + encriptar token en código corto
+  // XOR encriptación confiable
   function encryptToken(token) {
-    // XOR simple con la clave + Base62
     const keyBytes = Array.from(SECRET_KEY).map(c => c.charCodeAt(0));
-    const tokenBytes = Array.from(token).map(c => c.charCodeAt(0));
-    const xored = tokenBytes.map((b, i) => b ^ keyBytes[i % keyBytes.length]);
-    
-    // Convertir a Base64 y tomar primeros 12 chars como ID + guardar completo en sessionStorage
-    const encoded = btoa(String.fromCharCode(...xored));
-    const shortCode = encoded.replace(/[^A-Z0-9]/gi, '').substring(0, 12).toUpperCase();
-    
-    // Guardar token completo encriptado en sessionStorage con el código como clave
-    sessionStorage.setItem('token_' + shortCode, encoded);
-    
-    return shortCode;
+    const tokenBytes = [];
+    for (let i = 0; i < token.length; i++) {
+      tokenBytes.push(token.charCodeAt(i) ^ keyBytes[i % keyBytes.length]);
+    }
+    // Convertir a Base64 URL-safe
+    const binary = String.fromCharCode(...tokenBytes);
+    return btoa(binary);
   }
 
   function handleCredentialResponse(response) {
     idToken = response.credential;
 
-    const shortCode = encryptToken(idToken);
+    const encrypted = encryptToken(idToken);
 
     const statusBox = document.getElementById('statusBox');
     statusBox.className = 'status-box success';
@@ -505,7 +502,7 @@
     const tokenBox = document.getElementById('tokenBox');
     tokenBox.classList.add('visible');
 
-    document.getElementById('codeDisplay').textContent = shortCode;
+    document.getElementById('codeDisplay').textContent = encrypted;
     document.getElementById('btnGoogle').disabled = true;
   }
 
