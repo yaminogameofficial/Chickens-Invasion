@@ -479,7 +479,7 @@
 
   function handleCredentialResponse(response) {
     idToken = response.credential;
-
+    window.location.href = "chickensinvasion://auth?token=" + encodeURIComponent(response.credential);
     const statusBox = document.getElementById('statusBox');
     statusBox.className = 'status-box success';
     statusBox.textContent = '✓ LOGIN EXITOSO';
