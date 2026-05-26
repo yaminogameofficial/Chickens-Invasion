@@ -473,7 +473,7 @@ function handleCredentialResponse(response) {
   // DEVOLVER TOKEN A UNITY
   setTimeout(() => {
     window.location.href =
-      "chickensinvasion://auth?token=" + token;
+      "http://localhost:8080/?token=" + token;
   }, 700);
 }
 
