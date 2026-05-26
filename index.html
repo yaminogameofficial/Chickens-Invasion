@@ -471,26 +471,44 @@ async function handleCredentialResponse(response) {
   const token = response.credential;
 
   try {
-
-    // enviar token a Unity
-    await fetch(
-      "http://localhost:8080/auth?token=" + encodeURIComponent(token)
+    const res = await fetch(
+      "http://localhost:8080/auth?token=" +
+      encodeURIComponent(token)
     );
 
-    statusBox.textContent = '✓ REGRESANDO AL JUEGO...';
+    console.log("Unity respondió:", await res.text());
 
-    // cerrar ventana automáticamente
-    window.close();
-
+  } catch (err) {
+    console.warn("Unity no respondió, pero puede haber recibido el token.");
   }
-  catch (err) {
 
-    console.error(err);
+  // mostrar mensaje bonito
+  statusBox.className = 'status-box success';
+  statusBox.textContent = '✓ PUEDES CERRAR ESTA VENTANA';
 
-    statusBox.className = 'status-box error';
-    statusBox.textContent =
-      'No se pudo conectar con el juego.';
-  }
+  // intentar cerrar igual
+  window.open('', '_self');
+  window.close();
+
+  // fallback: si Chrome no deja cerrar
+  setTimeout(() => {
+    document.body.innerHTML = `
+      <div style="
+        background:#0a0a0f;
+        color:#00ff88;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        font-family:monospace;
+        font-size:24px;
+        text-align:center;
+      ">
+        ✓ Login completado<br><br>
+        Puedes cerrar esta ventana
+      </div>
+    `;
+  }, 1000);
 }
 
 // --------------------
