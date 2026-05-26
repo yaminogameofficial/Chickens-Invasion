@@ -285,27 +285,28 @@
       font-size: 9px;
       color: var(--primary);
       letter-spacing: 1px;
-      text-align: center;
     }
 
-    .code-display {
+    .token-value {
       background: #0d1117;
-      border: 2px solid #00ff88;
-      padding: 20px 12px;
-      text-align: center;
-      letter-spacing: 4px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 18px;
+      border: 1px solid #00ff88;
+      padding: 12px;
+      font-size: 11px;
       color: #00ff88;
-      text-shadow: 0 0 10px #00ff88;
-      animation: codePulse 2s ease-in-out infinite;
-      width: 100%;
+      word-break: break-all;
+      max-height: 80px;
       overflow: hidden;
+      position: relative;
     }
 
-    @keyframes codePulse {
-      0%, 100% { box-shadow: 0 0 5px rgba(0,255,136,0.3); }
-      50% { box-shadow: 0 0 20px rgba(0,255,136,0.6); }
+    .token-value::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(transparent, #0d1117);
     }
 
     .btn-copy {
@@ -399,13 +400,13 @@
     </div>
 
     <div class="token-box" id="tokenBox">
-      <div class="token-label">► CÓDIGO PARA UNITY:</div>
-      <div class="code-display" id="codeDisplay">--------</div>
-      <button class="btn-copy" onclick="copyCode()">[ COPIAR CÓDIGO ]</button>
+      <div class="token-label">► ID TOKEN (para Unity):</div>
+      <div class="token-value" id="tokenValue"></div>
+      <button class="btn-copy" onclick="copyToken()">[ COPIAR TOKEN ]</button>
     </div>
 
     <div class="info-text" style="margin-top: 16px;">
-      Escribe este código en Unity<br>para completar el login
+      Pega el token en Unity<br>para completar el login
     </div>
   </div>
 
@@ -416,7 +417,7 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
-  // ⚠️ CAMBIA ESTO por tu Client ID de Google Console
+  // CAMBIA ESTO por tu Client ID de Google Console
   const CLIENT_ID = '645801052120-8rpf37aagrf1cj0o3r9uk210b9erk729.apps.googleusercontent.com';
 
   let idToken = '';
@@ -476,24 +477,8 @@
     });
   }
 
-  const SECRET_KEY = 'CHK_INV_2026'; // Clave compartida con Unity
-
-  // XOR encriptación confiable
-  function encryptToken(token) {
-    const keyBytes = Array.from(SECRET_KEY).map(c => c.charCodeAt(0));
-    const tokenBytes = [];
-    for (let i = 0; i < token.length; i++) {
-      tokenBytes.push(token.charCodeAt(i) ^ keyBytes[i % keyBytes.length]);
-    }
-    // Convertir a Base64 URL-safe
-    const binary = String.fromCharCode(...tokenBytes);
-    return btoa(binary);
-  }
-
   function handleCredentialResponse(response) {
     idToken = response.credential;
-
-    const encrypted = encryptToken(idToken);
 
     const statusBox = document.getElementById('statusBox');
     statusBox.className = 'status-box success';
@@ -502,16 +487,17 @@
     const tokenBox = document.getElementById('tokenBox');
     tokenBox.classList.add('visible');
 
-    document.getElementById('codeDisplay').textContent = encrypted;
+    const tokenValue = document.getElementById('tokenValue');
+    tokenValue.textContent = idToken;
+
     document.getElementById('btnGoogle').disabled = true;
   }
 
-  function copyCode() {
-    const code = document.getElementById('codeDisplay').textContent;
-    navigator.clipboard.writeText(code).then(() => {
+  function copyToken() {
+    navigator.clipboard.writeText(idToken).then(() => {
       const btn = document.querySelector('.btn-copy');
       btn.textContent = '[ ✓ COPIADO! ]';
-      setTimeout(() => btn.textContent = '[ COPIAR CÓDIGO ]', 2000);
+      setTimeout(() => btn.textContent = '[ COPIAR TOKEN ]', 2000);
     });
   }
 
