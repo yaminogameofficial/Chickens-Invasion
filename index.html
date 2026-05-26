@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chickens Invasion - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --primary: #f5c400;
+      --accent: #ff4444;
+      --text: #ffffff;
+      --dim: #888;
+      --card: #111118;
+      --border: #2a2a3a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'VT323', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Pixel grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(245,196,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,196,0,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    /* Scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      animation: twinkle var(--d, 2s) infinite var(--delay, 0s);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      padding: 24px;
+    }
+
+    .logo-area {
+      text-align: center;
+      animation: floatIn 0.8s ease-out both;
+    }
+
+    .chicken-emoji {
+      font-size: 72px;
+      display: block;
+      animation: bounce 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(245,196,0,0.5));
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-12px) rotate(5deg); }
+    }
+
+    .game-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(14px, 3vw, 22px);
+      color: var(--primary);
+      text-shadow:
+        3px 3px 0 var(--accent),
+        6px 6px 0 rgba(255,68,68,0.3);
+      margin-top: 16px;
+      letter-spacing: 2px;
+      animation: glitch 4s infinite;
+    }
+
+    @keyframes glitch {
+      0%, 90%, 100% { transform: translate(0); }
+      92% { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
+      94% { transform: translate(2px, -1px); filter: hue-rotate(-90deg); }
+      96% { transform: translate(0); filter: none; }
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--dim);
+      margin-top: 8px;
+      letter-spacing: 3px;
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      padding: 40px 48px;
+      width: min(420px, 90vw);
+      position: relative;
+      animation: floatIn 0.8s ease-out 0.2s both;
+    }
+
+    /* Pixel corners */
+    .card::before, .card::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--primary);
+    }
+    .card::before { top: -2px; left: -2px; }
+    .card::after { bottom: -2px; right: -2px; }
+
+    .card-inner-tl, .card-inner-br {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+    }
+    .card-inner-tl { top: -2px; right: -2px; }
+    .card-inner-br { bottom: -2px; left: -2px; }
+
+    .card-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+    }
+
+    .btn-google {
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--text);
+      color: #1a1a1a;
+      border: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.1s;
+      position: relative;
+      letter-spacing: 1px;
+    }
+
+    .btn-google::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 100%;
+      height: 100%;
+      background: var(--primary);
+      z-index: -1;
+      transition: all 0.1s;
+    }
+
+    .btn-google:hover {
+      transform: translate(-2px, -2px);
+    }
+
+    .btn-google:hover::after {
+      transform: translate(2px, 2px);
+    }
+
+    .btn-google:active {
+      transform: translate(0);
+    }
+
+    .btn-google:active::after {
+      transform: translate(0);
+    }
+
+    .btn-google:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .divider {
+      text-align: center;
+      color: var(--dim);
+      font-size: 14px;
+      margin: 20px 0;
+      letter-spacing: 2px;
+    }
+
+    .status-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      padding: 16px;
+      font-size: 14px;
+      color: var(--dim);
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+
+    .status-box.success {
+      border-color: #00ff88;
+      color: #00ff88;
+    }
+
+    .status-box.error {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .status-box.loading {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .token-box {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+      animation: floatIn 0.4s ease-out;
+    }
+
+    .token-box.visible { display: flex; }
+
+    .token-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: var(--primary);
+      letter-spacing: 1px;
+    }
+
+    .token-value {
+      background: #0d1117;
+      border: 1px solid #00ff88;
+      padding: 12px;
+      font-size: 11px;
+      color: #00ff88;
+      word-break: break-all;
+      max-height: 80px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .token-value::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(transparent, #0d1117);
+    }
+
+    .btn-copy {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.1s;
+    }
+
+    .btn-copy:hover {
+      background: var(--primary);
+      color: var(--bg);
+    }
+
+    .info-text {
+      font-size: 14px;
+      color: var(--dim);
+      text-align: center;
+      letter-spacing: 1px;
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    .pixel-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .pixel {
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      animation: pixelPulse 1.5s infinite;
+    }
+
+    .pixel:nth-child(2) { animation-delay: 0.2s; }
+    .pixel:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pixelPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+      50% { opacity: 1; transform: scaleY(1.5); }
+    }
+
+    .footer {
+      font-size: 13px;
+      color: #444;
+      text-align: center;
+      letter-spacing: 2px;
+      animation: floatIn 0.8s ease-out 0.4s both;
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+  <div class="logo-area">
+    <span class="chicken-emoji">🐔</span>
+    <div class="game-title">CHICKENS INVASION</div>
+    <div class="subtitle">[ PLAYER LOGIN ]</div>
+  </div>
+
+  <div class="card">
+    <div class="card-inner-tl"></div>
+    <div class="card-inner-br"></div>
+
+    <div class="card-title">INICIAR SESIÓN</div>
+
+    <button class="btn-google" id="btnGoogle" onclick="loginWithGoogle()">
+      <svg class="google-icon" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      ENTRAR CON GOOGLE
+    </button>
+
+    <div class="divider">- - - - - - - - - -</div>
+
+    <div class="status-box" id="statusBox">
+      ESPERANDO LOGIN...
+    </div>
+
+    <div class="token-box" id="tokenBox">
+      <div class="token-label">► ID TOKEN (para Unity):</div>
+      <div class="token-value" id="tokenValue"></div>
+      <button class="btn-copy" onclick="copyToken()">[ COPIAR TOKEN ]</button>
+    </div>
+
+    <div class="info-text" style="margin-top: 16px;">
+      Pega el token en Unity<br>para completar el login
+    </div>
+  </div>
+
+  <div class="footer">CHICKENS INVASION © 2026</div>
+</div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+  // ⚠️ CAMBIA ESTO por tu Client ID de Google Console
+  const CLIENT_ID = '645801052120-96js8g7gp53jmj52suptrvp72bibnoeb.apps.googleusercontent.com';
+
+  let idToken = '';
+
+  // Generar estrellas
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      --d: ${1.5 + Math.random() * 3}s;
+      --delay: ${Math.random() * 3}s;
+      opacity: ${Math.random()};
+    `;
+    starsEl.appendChild(star);
+  }
+
+  function loginWithGoogle() {
+    const statusBox = document.getElementById('statusBox');
+    statusBox.className = 'status-box loading';
+    statusBox.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <div class="pixel-row">
+          <div class="pixel"></div>
+          <div class="pixel"></div>
+          <div class="pixel"></div>
+        </div>
+        CONECTANDO...
+      </div>
+    `;
+
+    // Usar Google Identity Services (moderno, no requiere redirect)
+    if (typeof google === 'undefined') {
+      statusBox.className = 'status-box error';
+      statusBox.textContent = 'ERROR: Google SDK no cargó. Recarga la página.';
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: handleCredentialResponse,
+      auto_select: false,
+    });
+
+    google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed()) {
+        // Fallback: mostrar popup manual
+        google.accounts.id.renderButton(
+          document.createElement('div'),
+          { theme: 'outline', size: 'large' }
+        );
+        statusBox.className = 'status-box error';
+        statusBox.textContent = 'Permite las ventanas emergentes e intenta de nuevo.';
+      }
+    });
+  }
+
+  function handleCredentialResponse(response) {
+    idToken = response.credential;
+
+    const statusBox = document.getElementById('statusBox');
+    statusBox.className = 'status-box success';
+    statusBox.textContent = '✓ LOGIN EXITOSO';
+
+    const tokenBox = document.getElementById('tokenBox');
+    tokenBox.classList.add('visible');
+
+    const tokenValue = document.getElementById('tokenValue');
+    tokenValue.textContent = idToken;
+
+    document.getElementById('btnGoogle').disabled = true;
+  }
+
+  function copyToken() {
+    navigator.clipboard.writeText(idToken).then(() => {
+      const btn = document.querySelector('.btn-copy');
+      btn.textContent = '[ ✓ COPIADO! ]';
+      setTimeout(() => btn.textContent = '[ COPIAR TOKEN ]', 2000);
+    });
+  }
+
+  // Inicializar Google ID al cargar
+  window.onload = () => {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleCredentialResponse,
+      });
+    }
+  };
+</script>
+
+</body>
+</html>
