@@ -31,6 +31,7 @@
       position: relative;
     }
 
+    /* Pixel grid background */
     body::before {
       content: '';
       position: fixed;
@@ -42,6 +43,7 @@
       pointer-events: none;
     }
 
+    /* Scanlines */
     body::after {
       content: '';
       position: fixed;
@@ -57,11 +59,16 @@
       z-index: 10;
     }
 
-    .stars { position: fixed; inset: 0; pointer-events: none; }
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
 
     .star {
       position: absolute;
-      width: 2px; height: 2px;
+      width: 2px;
+      height: 2px;
       background: white;
       animation: twinkle var(--d, 2s) infinite var(--delay, 0s);
     }
@@ -117,7 +124,12 @@
       96% { transform: translate(0); filter: none; }
     }
 
-    .subtitle { font-size: 18px; color: var(--dim); margin-top: 8px; letter-spacing: 3px; }
+    .subtitle {
+      font-size: 18px;
+      color: var(--dim);
+      margin-top: 8px;
+      letter-spacing: 3px;
+    }
 
     @keyframes floatIn {
       from { opacity: 0; transform: translateY(-30px); }
@@ -133,10 +145,12 @@
       animation: floatIn 0.8s ease-out 0.2s both;
     }
 
+    /* Pixel corners */
     .card::before, .card::after {
       content: '';
       position: absolute;
-      width: 12px; height: 12px;
+      width: 12px;
+      height: 12px;
       background: var(--primary);
     }
     .card::before { top: -2px; left: -2px; }
@@ -144,7 +158,8 @@
 
     .card-inner-tl, .card-inner-br {
       position: absolute;
-      width: 12px; height: 12px;
+      width: 12px;
+      height: 12px;
       background: var(--accent);
     }
     .card-inner-tl { top: -2px; right: -2px; }
@@ -180,22 +195,50 @@
     .btn-google::after {
       content: '';
       position: absolute;
-      bottom: -4px; right: -4px;
-      width: 100%; height: 100%;
+      bottom: -4px;
+      right: -4px;
+      width: 100%;
+      height: 100%;
       background: var(--primary);
       z-index: -1;
       transition: all 0.1s;
     }
 
-    .btn-google:hover { transform: translate(-2px, -2px); }
-    .btn-google:hover::after { transform: translate(2px, 2px); }
-    .btn-google:active { transform: translate(0); }
-    .btn-google:active::after { transform: translate(0); }
-    .btn-google:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-google:hover {
+      transform: translate(-2px, -2px);
+    }
 
-    .google-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    .btn-google:hover::after {
+      transform: translate(2px, 2px);
+    }
 
-    .divider { text-align: center; color: var(--dim); font-size: 14px; margin: 20px 0; letter-spacing: 2px; }
+    .btn-google:active {
+      transform: translate(0);
+    }
+
+    .btn-google:active::after {
+      transform: translate(0);
+    }
+
+    .btn-google:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .divider {
+      text-align: center;
+      color: var(--dim);
+      font-size: 14px;
+      margin: 20px 0;
+      letter-spacing: 2px;
+    }
 
     .status-box {
       background: #0d1117;
@@ -211,9 +254,21 @@
       letter-spacing: 1px;
       transition: all 0.3s;
     }
-    .status-box.success { border-color: #00ff88; color: #00ff88; }
-    .status-box.error   { border-color: var(--accent); color: var(--accent); }
-    .status-box.loading { border-color: var(--primary); color: var(--primary); }
+
+    .status-box.success {
+      border-color: #00ff88;
+      color: #00ff88;
+    }
+
+    .status-box.error {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .status-box.loading {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
 
     .token-box {
       display: none;
@@ -222,6 +277,7 @@
       margin-top: 20px;
       animation: floatIn 0.4s ease-out;
     }
+
     .token-box.visible { display: flex; }
 
     .token-label {
@@ -229,47 +285,28 @@
       font-size: 9px;
       color: var(--primary);
       letter-spacing: 1px;
-      text-align: center;
     }
 
-    .code-display {
+    .token-value {
       background: #0d1117;
-      border: 2px solid #00ff88;
-      padding: 20px 12px;
-      text-align: center;
-      letter-spacing: 8px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 26px;
+      border: 1px solid #00ff88;
+      padding: 12px;
+      font-size: 11px;
       color: #00ff88;
-      text-shadow: 0 0 10px #00ff88;
-      animation: codePulse 2s ease-in-out infinite;
-    }
-
-    @keyframes codePulse {
-      0%, 100% { box-shadow: 0 0 5px rgba(0,255,136,0.3); }
-      50%       { box-shadow: 0 0 20px rgba(0,255,136,0.6); }
-    }
-
-    .expiry-bar-wrap {
-      width: 100%;
-      height: 6px;
-      background: #1a1a2e;
-      border: 1px solid var(--border);
+      word-break: break-all;
+      max-height: 80px;
       overflow: hidden;
+      position: relative;
     }
 
-    .expiry-bar {
-      height: 100%;
-      background: #00ff88;
-      width: 100%;
-      transition: width 1s linear, background 1s;
-    }
-
-    .expiry-label {
-      font-size: 13px;
-      color: var(--dim);
-      text-align: center;
-      letter-spacing: 1px;
+    .token-value::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(transparent, #0d1117);
     }
 
     .btn-copy {
@@ -284,7 +321,11 @@
       letter-spacing: 1px;
       transition: all 0.1s;
     }
-    .btn-copy:hover { background: var(--primary); color: var(--bg); }
+
+    .btn-copy:hover {
+      background: var(--primary);
+      color: var(--bg);
+    }
 
     .info-text {
       font-size: 14px;
@@ -295,18 +336,25 @@
       margin-top: 8px;
     }
 
-    .pixel-row { display: flex; gap: 4px; justify-content: center; }
+    .pixel-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
     .pixel {
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       background: var(--primary);
       animation: pixelPulse 1.5s infinite;
     }
+
     .pixel:nth-child(2) { animation-delay: 0.2s; }
     .pixel:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes pixelPulse {
       0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
-      50%       { opacity: 1;   transform: scaleY(1.5); }
+      50% { opacity: 1; transform: scaleY(1.5); }
     }
 
     .footer {
@@ -352,68 +400,61 @@
     </div>
 
     <div class="token-box" id="tokenBox">
-      <div class="token-label">► CÓDIGO PARA UNITY:</div>
-      <div class="code-display" id="codeDisplay">------</div>
-      <div class="expiry-bar-wrap">
-        <div class="expiry-bar" id="expiryBar"></div>
-      </div>
-      <div class="expiry-label" id="expiryLabel">EXPIRA EN 3:00</div>
-      <button class="btn-copy" id="btnCopy" onclick="copyCode()">[ COPIAR CÓDIGO ]</button>
+      <div class="token-label">► ID TOKEN (para Unity):</div>
+      <div class="token-value" id="tokenValue"></div>
+      <button class="btn-copy" onclick="copyToken()">[ COPIAR TOKEN ]</button>
     </div>
 
     <div class="info-text" style="margin-top: 16px;">
-      Escribe este código en Unity<br>para completar el login
+      Pega el token en Unity<br>para completar el login
     </div>
   </div>
 
   <div class="footer">CHICKENS INVASION © 2026</div>
 </div>
 
+<!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
-  // ══════════════════════════════════════════
-  //  CONFIGURACIÓN
-  // ══════════════════════════════════════════
+  // CAMBIA ESTO por tu Client ID de Google Console
   const CLIENT_ID = '645801052120-8rpf37aagrf1cj0o3r9uk210b9erk729.apps.googleusercontent.com';
-  const TITLE_ID  = '1FD1C0';
-  const EXPIRY_MS = 3 * 60 * 1000; // 3 minutos
 
-  let currentCode     = '';
-  let expiryInterval  = null;
+  let idToken = '';
 
-  // ── Estrellas de fondo ──────────────────
+  // Generar estrellas
   const starsEl = document.getElementById('stars');
   for (let i = 0; i < 80; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${1.5+Math.random()*3}s;--delay:${Math.random()*3}s;opacity:${Math.random()}`;
-    starsEl.appendChild(s);
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      --d: ${1.5 + Math.random() * 3}s;
+      --delay: ${Math.random() * 3}s;
+      opacity: ${Math.random()};
+    `;
+    starsEl.appendChild(star);
   }
 
-  // ── Inicializar Google al cargar ────────
-  window.onload = () => {
-    if (typeof google !== 'undefined') {
-      google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleCredentialResponse,
-      });
-    }
-  };
-
-  // ── Botón login ─────────────────────────
   function loginWithGoogle() {
-    setStatus('loading', `
+    const statusBox = document.getElementById('statusBox');
+    statusBox.className = 'status-box loading';
+    statusBox.innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
         <div class="pixel-row">
-          <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+          <div class="pixel"></div>
+          <div class="pixel"></div>
+          <div class="pixel"></div>
         </div>
         CONECTANDO...
       </div>
-    `);
+    `;
 
+    // Usar Google Identity Services (moderno, no requiere redirect)
     if (typeof google === 'undefined') {
-      setStatus('error', 'ERROR: Google SDK no cargó. Recarga la página.');
+      statusBox.className = 'status-box error';
+      statusBox.textContent = 'ERROR: Google SDK no cargó. Recarga la página.';
       return;
     }
 
@@ -425,124 +466,50 @@
 
     google.accounts.id.prompt((notification) => {
       if (notification.isNotDisplayed()) {
-        setStatus('error', 'Permite las ventanas emergentes e intenta de nuevo.');
+        // Fallback: mostrar popup manual
+        google.accounts.id.renderButton(
+          document.createElement('div'),
+          { theme: 'outline', size: 'large' }
+        );
+        statusBox.className = 'status-box error';
+        statusBox.textContent = 'Permite las ventanas emergentes e intenta de nuevo.';
       }
     });
   }
 
-  // ── Callback de Google ──────────────────
-  async function handleCredentialResponse(response) {
-    const idToken = response.credential;
+  function handleCredentialResponse(response) {
+    idToken = response.credential;
 
-    setStatus('loading', `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-        <div class="pixel-row">
-          <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
-        </div>
-        GENERANDO CÓDIGO...
-      </div>
-    `);
+    const statusBox = document.getElementById('statusBox');
+    statusBox.className = 'status-box success';
+    statusBox.textContent = '✓ LOGIN EXITOSO';
 
-    try {
-      const ticket = await playfabLoginAnonymous();
-      const code   = await generateShortCode(idToken, ticket);
-      showCode(code);
-      document.getElementById('btnGoogle').disabled = true;
-    } catch (err) {
-      setStatus('error', 'ERROR: ' + err.message);
-      console.error(err);
-    }
+    const tokenBox = document.getElementById('tokenBox');
+    tokenBox.classList.add('visible');
+
+    const tokenValue = document.getElementById('tokenValue');
+    tokenValue.textContent = idToken;
+
+    document.getElementById('btnGoogle').disabled = true;
   }
 
-  // ── PlayFab: login anónimo ──────────────
-  async function playfabLoginAnonymous() {
-    let customId = localStorage.getItem('pf_custom_id');
-    if (!customId) {
-      customId = 'web_' + Math.random().toString(36).slice(2, 18);
-      localStorage.setItem('pf_custom_id', customId);
-    }
-
-    const res  = await fetch(`https://${TITLE_ID}.playfabapi.com/Client/LoginWithCustomID`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ TitleId: TITLE_ID, CustomId: customId, CreateAccount: true })
-    });
-    const data = await res.json();
-    if (data.status !== 'OK') throw new Error('PlayFab login falló: ' + data.errorMessage);
-    return data.data.SessionTicket;
-  }
-
-  // ── CloudScript: GenerateShortCode ──────
-  async function generateShortCode(idToken, ticket) {
-    const res  = await fetch(`https://${TITLE_ID}.playfabapi.com/Client/ExecuteCloudScript`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Authorization': ticket
-      },
-      body: JSON.stringify({
-        FunctionName: 'GenerateShortCode',
-        FunctionParameter: { idToken: idToken },
-        GeneratePlayStreamEvent: false
-      })
-    });
-    const data = await res.json();
-    if (data.status !== 'OK') throw new Error(data.errorMessage);
-    const result = data.data.FunctionResult;
-    if (result.error) throw new Error(result.error);
-    return result.code;
-  }
-
-  // ── Mostrar código + temporizador ───────
-  function showCode(code) {
-    currentCode = code;
-    setStatus('success', '✓ LOGIN EXITOSO');
-    document.getElementById('codeDisplay').textContent = code;
-    document.getElementById('tokenBox').classList.add('visible');
-
-    const startTime = Date.now();
-    if (expiryInterval) clearInterval(expiryInterval);
-
-    expiryInterval = setInterval(() => {
-      const remaining = Math.max(0, EXPIRY_MS - (Date.now() - startTime));
-      const pct  = (remaining / EXPIRY_MS) * 100;
-      const mins = Math.floor(remaining / 60000);
-      const secs = Math.floor((remaining % 60000) / 1000);
-
-      document.getElementById('expiryLabel').textContent =
-        'EXPIRA EN ' + mins + ':' + String(secs).padStart(2, '0');
-      document.getElementById('expiryBar').style.width = pct + '%';
-
-      if (pct < 30)      document.getElementById('expiryBar').style.background = '#ff4444';
-      else if (pct < 60) document.getElementById('expiryBar').style.background = '#f5c400';
-
-      if (remaining <= 0) {
-        clearInterval(expiryInterval);
-        currentCode = '';
-        document.getElementById('codeDisplay').textContent = 'EXPIRÓ';
-        document.getElementById('expiryLabel').textContent = 'CÓDIGO EXPIRADO';
-        document.getElementById('btnGoogle').disabled = false;
-        setStatus('error', 'CÓDIGO EXPIRADO — Vuelve a iniciar sesión');
-      }
-    }, 1000);
-  }
-
-  // ── Copiar código ───────────────────────
-  function copyCode() {
-    if (!currentCode) return;
-    navigator.clipboard.writeText(currentCode).then(() => {
-      const btn = document.getElementById('btnCopy');
+  function copyToken() {
+    navigator.clipboard.writeText(idToken).then(() => {
+      const btn = document.querySelector('.btn-copy');
       btn.textContent = '[ ✓ COPIADO! ]';
-      setTimeout(() => btn.textContent = '[ COPIAR CÓDIGO ]', 2000);
+      setTimeout(() => btn.textContent = '[ COPIAR TOKEN ]', 2000);
     });
   }
 
-  // ── Helper UI ───────────────────────────
-  function setStatus(type, html) {
-    const box = document.getElementById('statusBox');
-    box.className = 'status-box ' + type;
-    box.innerHTML = html;
-  }
+  // Inicializar Google ID al cargar
+  window.onload = () => {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleCredentialResponse,
+      });
+    }
+  };
 </script>
 
 </body>
