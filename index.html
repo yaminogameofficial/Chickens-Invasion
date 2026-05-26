@@ -378,138 +378,126 @@
   </div>
 
   <div class="card">
-    <div class="card-inner-tl"></div>
-    <div class="card-inner-br"></div>
+  <div class="card-inner-tl"></div>
+  <div class="card-inner-br"></div>
 
-    <div class="card-title">INICIAR SESIÓN</div>
+  <div class="card-title">INICIAR SESIÓN</div>
 
-    <button class="btn-google" id="btnGoogle" onclick="loginWithGoogle()">
-      <svg class="google-icon" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      ENTRAR CON GOOGLE
-    </button>
+  <button class="btn-google" id="btnGoogle" onclick="loginWithGoogle()">
+    <svg class="google-icon" viewBox="0 0 24 24">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+    </svg>
+    ENTRAR CON GOOGLE
+  </button>
 
-    <div class="divider">- - - - - - - - - -</div>
+  <div class="divider">- - - - - - - - - -</div>
 
-    <div class="status-box" id="statusBox">
-      ESPERANDO LOGIN...
-    </div>
-
-    <div class="token-box" id="tokenBox">
-      <div class="token-label">► ID TOKEN (para Unity):</div>
-      <div class="token-value" id="tokenValue"></div>
-      <button class="btn-copy" onclick="copyToken()">[ COPIAR TOKEN ]</button>
-    </div>
-
-    <div class="info-text" style="margin-top: 16px;">
-      Pega el token en Unity<br>para completar el login
-    </div>
+  <div class="status-box" id="statusBox">
+    ESPERANDO LOGIN...
   </div>
 
-  <div class="footer">CHICKENS INVASION © 2026</div>
+  <div class="info-text" style="margin-top:16px;">
+    Al iniciar sesión volverás automáticamente al juego
+  </div>
 </div>
 
 <!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
-  // CAMBIA ESTO por tu Client ID de Google Console
-  const CLIENT_ID = '645801052120-8rpf37aagrf1cj0o3r9uk210b9erk729.apps.googleusercontent.com';
+const CLIENT_ID = '645801052120-8rpf37aagrf1cj0o3r9uk210b9erk729.apps.googleusercontent.com';
 
-  let idToken = '';
+// --------------------
+// ESTRELLAS
+// --------------------
+const starsEl = document.getElementById('stars');
 
-  // Generar estrellas
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 80; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.cssText = `
-      left: ${Math.random() * 100}%;
-      top: ${Math.random() * 100}%;
-      --d: ${1.5 + Math.random() * 3}s;
-      --delay: ${Math.random() * 3}s;
-      opacity: ${Math.random()};
-    `;
-    starsEl.appendChild(star);
-  }
+for (let i = 0; i < 80; i++) {
+  const star = document.createElement('div');
+  star.className = 'star';
+  star.style.cssText = `
+    left:${Math.random()*100}%;
+    top:${Math.random()*100}%;
+    --d:${1.5 + Math.random()*3}s;
+    --delay:${Math.random()*3}s;
+    opacity:${Math.random()};
+  `;
+  starsEl.appendChild(star);
+}
 
-  function loginWithGoogle() {
-    const statusBox = document.getElementById('statusBox');
-    statusBox.className = 'status-box loading';
-    statusBox.innerHTML = `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-        <div class="pixel-row">
-          <div class="pixel"></div>
-          <div class="pixel"></div>
-          <div class="pixel"></div>
-        </div>
-        CONECTANDO...
+// --------------------
+// GOOGLE LOGIN
+// --------------------
+function loginWithGoogle() {
+
+  const statusBox = document.getElementById('statusBox');
+
+  statusBox.className = 'status-box loading';
+  statusBox.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <div class="pixel-row">
+        <div class="pixel"></div>
+        <div class="pixel"></div>
+        <div class="pixel"></div>
       </div>
-    `;
+      CONECTANDO...
+    </div>
+  `;
 
-    // Usar Google Identity Services (moderno, no requiere redirect)
-    if (typeof google === 'undefined') {
-      statusBox.className = 'status-box error';
-      statusBox.textContent = 'ERROR: Google SDK no cargó. Recarga la página.';
-      return;
-    }
-
-    google.accounts.id.initialize({
-      client_id: CLIENT_ID,
-      callback: handleCredentialResponse,
-      auto_select: false,
-    });
-
-    google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed()) {
-        // Fallback: mostrar popup manual
-        google.accounts.id.renderButton(
-          document.createElement('div'),
-          { theme: 'outline', size: 'large' }
-        );
-        statusBox.className = 'status-box error';
-        statusBox.textContent = 'Permite las ventanas emergentes e intenta de nuevo.';
-      }
-    });
+  if (typeof google === 'undefined') {
+    statusBox.className = 'status-box error';
+    statusBox.textContent = 'ERROR: Google SDK no cargó.';
+    return;
   }
 
-  function handleCredentialResponse(response) {
-    idToken = response.credential;
-    window.location.href = "chickensinvasion://auth?token=" + encodeURIComponent(response.credential);
-    const statusBox = document.getElementById('statusBox');
-    statusBox.className = 'status-box success';
-    statusBox.textContent = '✓ LOGIN EXITOSO';
+  google.accounts.id.prompt();
+}
 
-    const tokenBox = document.getElementById('tokenBox');
-    tokenBox.classList.add('visible');
+// --------------------
+// TOKEN RECIBIDO
+// --------------------
+function handleCredentialResponse(response) {
 
-    const tokenValue = document.getElementById('tokenValue');
-    tokenValue.textContent = idToken;
+  const statusBox = document.getElementById('statusBox');
 
-    document.getElementById('btnGoogle').disabled = true;
-  }
+  statusBox.className = 'status-box success';
+  statusBox.textContent = '✓ LOGIN EXITOSO';
 
-  function copyToken() {
-    navigator.clipboard.writeText(idToken).then(() => {
-      const btn = document.querySelector('.btn-copy');
-      btn.textContent = '[ ✓ COPIADO! ]';
-      setTimeout(() => btn.textContent = '[ COPIAR TOKEN ]', 2000);
-    });
-  }
+  document.getElementById('btnGoogle').disabled = true;
 
-  // Inicializar Google ID al cargar
-  window.onload = () => {
-    if (typeof google !== 'undefined') {
-      google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleCredentialResponse,
-      });
-    }
-  };
+  const token = encodeURIComponent(response.credential);
+
+  // DEVOLVER TOKEN A UNITY
+  setTimeout(() => {
+    window.location.href =
+      "chickensinvasion://auth?token=" + token;
+  }, 700);
+}
+
+// --------------------
+// INIT
+// --------------------
+window.onload = () => {
+
+  if (typeof google === 'undefined') return;
+
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID,
+    callback: handleCredentialResponse,
+
+    // intenta login automático
+    auto_select: true,
+
+    // mejor UX desktop
+    cancel_on_tap_outside: false
+  });
+
+  // intentar login silencioso automáticamente
+  google.accounts.id.prompt();
+};
 </script>
 
 </body>
