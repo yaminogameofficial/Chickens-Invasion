@@ -469,7 +469,7 @@ async function handleCredentialResponse(response) {
   document.getElementById('btnGoogle').disabled = true;
 
   const token = response.credential;
-
+  window.location.href = "chickens://callback?token=" + encodeURIComponent(token);
   try {
     const res = await fetch(
       "http://localhost:8080/auth?token=" +
